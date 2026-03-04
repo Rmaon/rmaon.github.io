@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Portafolio de Ramón Caminero Arroyo – Desarrollador de Software Junior especializado en desarrollo web, aplicaciones multiplataforma y diseño gráfico." />
+  <title>RMAON.DEV · Ramón Caminero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --green: #00ff41;
+      --green-dim: #00c832;
+      --green-dark: #003b00;
+      --green-glow: rgba(0, 255, 65, .35);
+      --bg: #020b02;
+      --bg2: #040f04;
+      --text: #c8ffc8;
+      --text-dim: #5a9e5a;
+      --red: #ff4141;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Rajdhani', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom Cursor ── */
+    .cursor {
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform .1s, width .2s, height .2s, background .2s;
+      z-index: 9999;
+      mix-blend-mode: screen;
+    }
+
+    .cursor.big {
+      width: 36px;
+      height: 36px;
+      background: var(--green-glow);
+    }
+
+    /* ── Matrix Rain ── */
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: .18;
+      pointer-events: none;
+    }
+
+    /* ── Skip nav ── */
+    .skip-link {
+      position: absolute;
+      top: -999px;
+      left: 0;
+      background: var(--green);
+      color: var(--bg);
+      padding: .5rem 1rem;
+      font-weight: 700;
+      z-index: 10000;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* ── Layout ── */
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(2, 11, 2, .92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 255, 65, .12);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1rem;
+      color: var(--green);
+      letter-spacing: .05em;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+    }
+
+    .nav-logo .bracket {
+      color: var(--text-dim);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.8rem;
+    }
+
+    nav a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      color: var(--green);
+      outline: 2px solid var(--green);
+      outline-offset: 4px;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 8rem;
+    }
+
+    .hero-tag {
+      font-size: .72rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .hero-tag::before {
+      content: '> ';
+      color: var(--green);
+    }
+
+    h1 {
+      font-family: var(--sans);
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 700;
+      line-height: .95;
+      color: var(--green);
+      text-shadow: 0 0 40px var(--green-glow), 0 0 80px rgba(0, 255, 65, .1);
+      margin-bottom: .5rem;
+      animation: fadeUp .8s ease both;
+    }
+
+    .hero-subtitle {
+      font-family: var(--sans);
+      font-size: clamp(1.1rem, 3vw, 1.8rem);
+      font-weight: 300;
+      color: var(--text);
+      letter-spacing: .05em;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .8s .15s ease both;
+      min-height: 2.4rem;
+    }
+
+    .hero-subtitle strong {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .hero-desc {
+      max-width: 600px;
+      font-size: .9rem;
+      line-height: 1.9;
+      color: var(--text-dim);
+      margin-bottom: 3rem;
+      animation: fadeUp .8s .3s ease both;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      animation: fadeUp .8s .45s ease both;
+    }
+
+    .hero-scroll {
+      margin-top: 5rem;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      color: var(--text-dim);
+      font-size: .72rem;
+      letter-spacing: .15em;
+      animation: fadeUp .8s .6s ease both;
+    }
+
+    .scroll-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--green-dim));
+      animation: pulse 2s infinite;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .7rem 1.6rem;
+      border: 1.5px solid var(--green);
+      color: var(--green);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: .82rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: transparent;
+      transition: background .25s, color .25s, box-shadow .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--green);
+      transform: translateX(-100%);
+      transition: transform .25s;
+      z-index: -1;
+    }
+
+    .btn:hover::before,
+    .btn:focus::before {
+      transform: translateX(0);
+    }
+
+    .btn:hover,
+    .btn:focus {
+      color: var(--bg);
+      box-shadow: 0 0 24px var(--green-glow);
+      outline: none;
+    }
+
+    .btn-ghost {
+      border-color: var(--text-dim);
+      color: var(--text-dim);
+    }
+
+    .btn-ghost::before {
+      background: var(--text-dim);
+    }
+
+    .btn-ghost:hover,
+    .btn-ghost:focus {
+      color: var(--bg);
+    }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .68rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: .5rem;
+    }
+
+    .section-label::before {
+      content: '// ';
+      color: var(--green);
+    }
+
+    h2 {
+      font-family: var(--sans);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 3rem;
+      text-shadow: 0 0 20px var(--green-glow);
+    }
+
+    /* ── About ── */
+    #about .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      font-size: .9rem;
+      line-height: 1.95;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+    }
+
+    .about-text p span {
+      color: var(--green);
+    }
+
+    .about-data {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .data-item {
+      border-left: 2px solid var(--green);
+      padding-left: 1.2rem;
+    }
+
+    .data-label {
+      font-size: .68rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: .2rem;
+    }
+
+    .data-value {
+      font-family: var(--sans);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── Skills ── */
+    #skills .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .skill-card {
+      border: 1px solid rgba(0, 255, 65, .15);
+      padding: 1.4rem;
+      background: rgba(0, 255, 65, .02);
+      transition: border-color .25s, box-shadow .25s, transform .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--green);
+      transition: height .4s;
+    }
+
+    .skill-card:hover::after {
+      height: 100%;
+    }
+
+    .skill-card:hover {
+      border-color: rgba(0, 255, 65, .5);
+      box-shadow: 0 0 24px rgba(0, 255, 65, .08);
+      transform: translateY(-3px);
+    }
+
+    .skill-category {
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: .8rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .tag {
+      font-size: .76rem;
+      padding: .2rem .55rem;
+      border: 1px solid rgba(0, 255, 65, .25);
+      color: var(--text);
+      background: rgba(0, 255, 65, .04);
+    }
+
+    /* ── Projects ── */
+    #projects .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      border: 1px solid rgba(0, 255, 65, .15);
+      padding: 1.8rem;
+      background: rgba(0, 255, 65, .02);
+      transition: border-color .25s, box-shadow .25s, transform .25s;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--green), transparent);
+      transform: scaleX(0);
+      transition: transform .4s;
+    }
+
+    .project-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .project-card:hover {
+      border-color: rgba(0, 255, 65, .45);
+      box-shadow: 0 8px 32px rgba(0, 255, 65, .07);
+      transform: translateY(-4px);
+    }
+
+    .project-card:focus {
+      outline: 2px solid var(--green);
+      outline-offset: 4px;
+    }
+
+    .project-lang {
+      font-size: .68rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: .2rem;
+    }
+
+    .project-name {
+      font-family: var(--sans);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .project-desc {
+      font-size: .82rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .project-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .5rem;
+      padding-top: .8rem;
+      border-top: 1px solid rgba(0, 255, 65, .1);
+    }
+
+    .project-tags {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+
+    .project-link-icon {
+      color: var(--green-dim);
+      font-size: .82rem;
+      letter-spacing: .05em;
+      white-space: nowrap;
+    }
+
+    /* ── Experience ── */
+    #experience .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .exp-item::before {
+      content: '';
+      position: absolute;
+      left: 139px;
+      top: .5rem;
+      bottom: -2.5rem;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--green-dim), transparent);
+    }
+
+    .exp-item:last-child::before {
+      display: none;
+    }
+
+    .exp-year {
+      text-align: right;
+      font-size: .78rem;
+      color: var(--green-dim);
+      padding-top: -4.1rem;
+      letter-spacing: .05rem;
+    }
+
+    .exp-dot {
+      position: absolute;
+      left: 131px;
+      top: .35rem;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: 0 0 12px var(--green-glow);
+    }
+
+    .exp-content h3 {
+      font-family: var(--sans);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .exp-content .exp-company {
+      font-size: .78rem;
+      color: var(--green);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+
+    .exp-content p {
+      font-size: .87rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+    }
+
+    /* ── Education ── */
+    #education .edu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .edu-item {
+      border: 1px solid rgba(0, 255, 65, .12);
+      padding: 1.4rem 1.8rem;
+      background: rgba(0, 255, 65, .02);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      transition: border-color .2s;
+    }
+
+    .edu-item:hover {
+      border-color: rgba(0, 255, 65, .4);
+    }
+
+    .edu-item h3 {
+      font-family: var(--sans);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .3rem;
+    }
+
+    .edu-item .edu-school {
+      font-size: .78rem;
+      color: var(--text-dim);
+    }
+
+    .edu-badge {
+      font-size: .73rem;
+      padding: .3rem .8rem;
+      border: 1px solid var(--green);
+      color: var(--green);
+      white-space: nowrap;
+      height: fit-content;
+    }
+
+    /* ── Contact ── */
+    #contact {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #contact>p {
+      max-width: 500px;
+      color: var(--text-dim);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      font-size: .9rem;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-email {
+      font-size: .9rem;
+      color: var(--text-dim);
+      margin-top: .5rem;
+    }
+
+    .contact-email a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .contact-email a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: .73rem;
+      color: var(--text-dim);
+      border-top: 1px solid rgba(0, 255, 65, .08);
+      position: relative;
+      z-index: 1;
+    }
+
+    footer span {
+      color: var(--green);
+    }
+
+    /* ── Glitch ── */
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch::before {
+      color: var(--red);
+      animation: glitchA 3.5s infinite steps(1);
+      clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    }
+
+    .glitch::after {
+      color: #00d4ff;
+      animation: glitchB 3.5s infinite steps(1);
+      clip-path: polygon(0 55%, 100% 55%, 100% 75%, 0 75%);
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: .4;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes glitchA {
+
+      0%,
+      95% {
+        transform: none;
+        opacity: 0;
+      }
+
+      96% {
+        transform: translate(-3px, 1px);
+        opacity: .8;
+      }
+
+      97% {
+        transform: translate(2px, -1px);
+        opacity: .8;
+      }
+
+      100% {
+        transform: none;
+        opacity: 0;
+      }
+    }
+
+    @keyframes glitchB {
+
+      0%,
+      96% {
+        transform: none;
+        opacity: 0;
+      }
+
+      97% {
+        transform: translate(3px, -2px);
+        opacity: .8;
+      }
+
+      99% {
+        transform: translate(-2px, 1px);
+        opacity: .8;
+      }
+
+      100% {
+        transform: none;
+        opacity: 0;
+      }
+    }
+
+    .type-cursor::after {
+      content: '|';
+      animation: blink .7s infinite;
+      color: var(--green);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav ul li:nth-child(n+5) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        gap: 1rem;
+      }
+
+      nav ul li:nth-child(n+4) {
+        display: none;
+      }
+
+      #about .about-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .exp-item {
+        grid-template-columns: 1fr;
+      }
+
+      .exp-item::before,
+      .exp-dot {
+        display: none;
+      }
+
+      .exp-year {
+        text-align: left;
+      }
+    }
+
+    @media (forced-colors: active) {
+      .btn {
+        border: 2px solid ButtonText;
+      }
+
+      .skill-card,
+      .project-card {
+        border: 1px solid ButtonText;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+
+      #matrixCanvas {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+  <canvas id="matrixCanvas" aria-hidden="true"></canvas>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+  <nav role="navigation" aria-label="Navegación principal">
+    <a href="#hero" class="nav-logo" aria-label="Inicio – RMAON.DEV">
+      <span class="bracket">[</span>RMAON<span class="bracket">.</span>DEV<span class="bracket">]</span>
+    </a>
+    <ul>
+      <li><a href="#about">Sobre mí</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experiencia</a></li>
+      <li><a href="#education">Estudios</a></li>
+      <li><a href="#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section id="hero" aria-label="Presentación">
+      <p class="hero-tag" aria-hidden="true">Inicializando sistema · Cargando perfil...</p>
+      <h1 class="glitch" data-text="Ramón Caminero">Ramón Caminero</h1>
+      <p class="hero-subtitle type-cursor" id="heroSubtitle" aria-label="Desarrollador de Software Junior"></p>
+      <p class="hero-desc">
+        Desarrollador junior con formación en DAM y DAW y experiencia real con Appian en Indra/Minsait.
+        En mis repositorios de GitHub podrás ver proyectos que van de Android y Java hasta React, Django y NestJS.
+        También diseñador gráfico y DJ — siempre picando código o aprendiendo algo nuevo.
+      </p>
+      <div class="hero-links">
+        <a href="https://www.linkedin.com/in/rmaon/" target="_blank" rel="noopener noreferrer" class="btn"
+          aria-label="Perfil de LinkedIn de Ramón Caminero">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+          </svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com/Rmaon" target="_blank" rel="noopener noreferrer" class="btn btn-ghost"
+          aria-label="Perfil de GitHub de Ramón Caminero, 39 repositorios">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+          </svg>
+          GitHub
+        </a>
+      </div>
+      <div class="hero-scroll" aria-hidden="true">
+        <div class="scroll-line"></div>
+        <span>SCROLL</span>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" aria-label="Sobre mí" class="reveal">
+      <p class="section-label">Identificación</p>
+      <h2>Sobre mí</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            Soy un desarrollador junior con formación en <span>DAM y DAW</span> y experiencia profesional real en
+            Indra/Minsait, donde desarrollé aplicaciones web con la plataforma low-code <span>Appian</span> y trabajé
+            con MySQL y SQL Server en proyectos de clientes reales.
+          </p>
+          <p>
+            En mi GitHub hay <span>39 repositorios</span> públicos: aplicaciones Android en Kotlin, proyectos de
+            concurrencia y sockets en Java, scripts en Python con Pandas, ejercicios en C# y proyectos web con React,
+            Django, NestJS y Express. Siempre picando código.
+          </p>
+          <p>
+            Más allá del desarrollo, soy <span>diseñador gráfico freelance</span> con dominio de Photoshop, Illustrator,
+            After Effects y Blender. También soy DJ y técnico de sonido en eventos en directo — todo eso me ha dado
+            visión de cliente, adaptabilidad y capacidad de trabajar bajo presión con resultados.
+          </p>
+        </div>
+        <div class="about-data" role="list" aria-label="Datos de contacto">
+          <div class="data-item" role="listitem">
+            <p class="data-label">GitHub</p>
+            <p class="data-value">github.com/Rmaon</p>
+          </div>
+          <div class="data-item" role="listitem">
+            <p class="data-label">LinkedIn</p>
+            <p class="data-value">linkedin.com/in/rmaon</p>
+          </div>
+          <div class="data-item" role="listitem">
+            <p class="data-label">Email</p>
+            <p class="data-value" style="font-size:.85rem">ramoncamineroarroyo@gmail.com</p>
+          </div>
+          <div class="data-item" role="listitem">
+            <p class="data-label">Idiomas</p>
+            <p class="data-value">Español (Nativo) · Inglés (B2)</p>
+          </div>
+          <div class="data-item" role="listitem">
+            <p class="data-label">Estado</p>
+            <p class="data-value" style="color:var(--green)">Abierto a oportunidades</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" aria-label="Habilidades técnicas" class="reveal">
+      <p class="section-label">Sistema</p>
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <article class="skill-card" aria-label="Lenguajes de programación">
+          <p class="skill-category">Lenguajes</p>
+          <div class="skill-tags">
+            <span class="tag">Python</span>
+            <span class="tag">C#</span>
+            <span class="tag">Java</span>
+            <span class="tag">Kotlin</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">PHP</span>
+            <span class="tag">HTML5</span>
+          </div>
+        </article>
+        <article class="skill-card" aria-label="Frameworks y desarrollo web">
+          <p class="skill-category">Web &amp; Frameworks</p>
+          <div class="skill-tags">
+            <span class="tag">React</span>
+            <span class="tag">Angular</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Express</span>
+            <span class="tag">Django</span>
+            <span class="tag">Bootstrap</span>
+            <span class="tag">NestJS</span>
+          </div>
+        </article>
+        <article class="skill-card" aria-label="Bases de datos">
+          <p class="skill-category">Bases de datos</p>
+          <div class="skill-tags">
+            <span class="tag">MySQL</span>
+            <span class="tag">SQL Server</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">MongoDB</span>
+            <span class="tag">PostgreSQL</span>
+          </div>
+        </article>
+        <article class="skill-card" aria-label="Herramientas de desarrollo">
+          <p class="skill-category">Herramientas Dev</p>
+          <div class="skill-tags">
+            <span class="tag">Appian</span>
+            <span class="tag">Git</span>
+            <span class="tag">GitHub</span>
+            <span class="tag">Prisma</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">Android Studio</span>
+          </div>
+        </article>
+        <article class="skill-card" aria-label="Diseño gráfico y multimedia">
+          <p class="skill-category">Diseño &amp; Multimedia</p>
+          <div class="skill-tags">
+            <span class="tag">Photoshop</span>
+            <span class="tag">Illustrator</span>
+            <span class="tag">After Effects</span>
+            <span class="tag">Blender</span>
+          </div>
+        </article>
+        <article class="skill-card" aria-label="Habilidades blandas">
+          <p class="skill-category">Soft Skills</p>
+          <div class="skill-tags">
+            <span class="tag">Comunicación</span>
+            <span class="tag">Trabajo en equipo</span>
+            <span class="tag">Resolución de problemas</span>
+            <span class="tag">Proactividad</span>
+            <span class="tag">Adaptabilidad</span>
+            <span class="tag">Trabajo bajo presión</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+
+    <!-- EXPERIENCE -->
+    <section id="experience" aria-label="Experiencia laboral" class="reveal">
+      <p class="section-label">Historial</p>
+      <h2>Experiencia</h2>
+      <div class="exp-list">
+
+        <article class="exp-item">
+          <time class="exp-year" datetime="2025 ">2025  .</time>
+          <span class="exp-dot" aria-hidden="true"></span>
+          <div class="exp-content">
+            <h3>Junior Developer</h3>
+            <p class="exp-company">Indra · Minsait</p>
+            <p>Desarrollo de aplicaciones web con la plataforma low-code Appian. Trabajo con bases de datos MySQL y SQL
+              Server en proyectos reales de clientes, aplicando buenas prácticas de desarrollo en equipos colaborativos
+              y entornos ágiles.</p>
+          </div>
+        </article>
+
+        <article class="exp-item">
+          <span class="exp-year">Freelance  .</span>
+          <span class="exp-dot" aria-hidden="true"></span>
+          <div class="exp-content">
+            <h3>Diseñador Gráfico Freelance</h3>
+            <p class="exp-company">Autónomo</p>
+            <p>Comunicación directa con clientes, gestión de requisitos visuales y entrega de materiales con Adobe
+              Photoshop, Illustrator, After Effects y Blender. Atención al detalle y orientación al resultado final del
+              cliente.</p>
+          </div>
+        </article>
+
+        <article class="exp-item">
+          <span class="exp-year">Freelance  .</span>
+          <span class="exp-dot" aria-hidden="true"></span>
+          <div class="exp-content">
+            <h3>DJ &amp; Técnico de Sonido</h3>
+            <p class="exp-company">Eventos en directo</p>
+            <p>Trato directo con el cliente, adaptación en tiempo real a las preferencias del público y resolución de
+              imprevistos técnicos en entornos en vivo. Montaje de equipos de sonido e iluminación en equipo y bajo
+              presión.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education" aria-label="Formación académica" class="reveal">
+      <p class="section-label">Formación</p>
+      <h2>Estudios</h2>
+      <div class="edu-list">
+        <article class="edu-item">
+          <div>
+            <h3>Grado Superior en Desarrollo de Aplicaciones Web (DAW)</h3>
+            <p class="edu-school">CIFP Virgen de Gracia</p>
+          </div>
+          <span class="edu-badge">2025 – 2026</span>
+        </article>
+        <article class="edu-item">
+          <div>
+            <h3>Formación Profesional en Appian (Low-Code)</h3>
+            <p class="edu-school">Indra · Minsait — Formación en empresa</p>
+          </div>
+          <span class="edu-badge">2025</span>
+        </article>
+        <article class="edu-item">
+          <div>
+            <h3>Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)</h3>
+            <p class="edu-school">I.E.S. Maestre de Calatrava</p>
+          </div>
+          <span class="edu-badge">2022 – 2024</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" aria-label="Contacto" class="reveal">
+      <p class="section-label">Conexión</p>
+      <h2>Contacto</h2>
+      <p>¿Tienes un proyecto interesante, una oportunidad o simplemente quieres hablar de código? Escríbeme — estoy
+        abierto a nuevas colaboraciones y retos profesionales.</p>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/rmaon/" target="_blank" rel="noopener noreferrer" class="btn"
+          aria-label="Visitar LinkedIn de Ramón Caminero">LinkedIn</a>
+        <a href="https://github.com/Rmaon" target="_blank" rel="noopener noreferrer" class="btn btn-ghost"
+          aria-label="Visitar GitHub de Ramón Caminero">GitHub</a>
+        <a href="mailto:ramoncamineroarroyo@gmail.com" class="btn btn-ghost"
+          aria-label="Enviar email a Ramón Caminero">Email</a>
+      </div>
+      <p class="contact-email">
+        O directamente en <a href="mailto:ramoncamineroarroyo@gmail.com">ramoncamineroarroyo@gmail.com</a>
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p><span>[RMAON.DEV]</span> · Ramón Caminero Arroyo · 2026 </p>
+  </footer>
+
+  <script>
+    /* ── Matrix Rain ── */
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    let cols, drops;
+    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ0123456789ABCDEFabcdef<>{}[]//==>>&&||';
+
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.floor(canvas.width / 14);
+      drops = Array(cols).fill(1);
+    }
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(2,11,2,0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = '14px "Share Tech Mono", monospace';
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillStyle = Math.random() > .97 ? '#ffffff' : drops[i] * 14 < 80 ? '#00ff41' : '#003b00';
+        ctx.fillText(char, i * 14, drops[i] * 14);
+        if (drops[i] * 14 > canvas.height && Math.random() > .975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    initMatrix();
+    setInterval(drawMatrix, 50);
+    window.addEventListener('resize', initMatrix);
+
+    /* ── Custom Cursor ── */
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .project-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+    });
+
+    /* ── Scroll Reveal ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── Multi-phrase Typing Effect ── */
+    const subtitleEl = document.getElementById('heroSubtitle');
+    const phrases = [
+      'Desarrollador de Software Junior',
+      'Fullstack Web Developer',
+      'Kotlin · Java · JavaScript · Python',
+      'Diseñador Gráfico & DJ'
+    ];
+    let pIdx = 0, cIdx = 0, deleting = false;
+
+    function type() {
+      const phrase = phrases[pIdx];
+      if (!deleting) {
+        cIdx++;
+        subtitleEl.textContent = phrase.slice(0, cIdx);
+        subtitleEl.classList.add('type-cursor');
+        if (cIdx >= phrase.length) {
+          setTimeout(() => { deleting = true; type(); }, 2400);
+          return;
+        }
+      } else {
+        cIdx--;
+        subtitleEl.textContent = phrase.slice(0, cIdx);
+        if (cIdx === 0) {
+          deleting = false;
+          pIdx = (pIdx + 1) % phrases.length;
+          setTimeout(type, 300);
+          return;
+        }
+      }
+      setTimeout(type, deleting ? 38 : 68);
+    }
+    setTimeout(type, 1000);
+  </script>
+</body>
+
+</html>
